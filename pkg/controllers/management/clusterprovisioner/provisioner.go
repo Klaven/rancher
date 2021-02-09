@@ -108,6 +108,11 @@ func (p *Provisioner) Remove(cluster *v3.Cluster) (runtime.Object, error) {
 		return cluster, nil
 	}
 
+	if cluster.Spec.GKEConfig != nil {
+		logrus.Debugf("GKE cluster [%s] will be managed by gke-operator-controller, skipping remove", cluster.Name)
+		return cluster, nil
+	}
+
 	logrus.Infof("Deleting cluster [%s]", cluster.Name)
 	if skipLocalK3sImported(cluster) ||
 		cluster.Status.Driver == "" {
@@ -134,6 +139,11 @@ func (p *Provisioner) Remove(cluster *v3.Cluster) (runtime.Object, error) {
 func (p *Provisioner) Updated(cluster *v3.Cluster) (runtime.Object, error) {
 	if cluster.Spec.EKSConfig != nil {
 		logrus.Debugf("EKS cluster [%s] will be managed by eks-operator-controller, skipping update", cluster.Name)
+		return cluster, nil
+	}
+
+	if cluster.Spec.GKEConfig != nil {
+		logrus.Debugf("GKE cluster [%s] will be managed by gke-operator-controller, skipping remove", cluster.Name)
 		return cluster, nil
 	}
 
@@ -344,6 +354,11 @@ func (p *Provisioner) machineChanged(key string, machine *v3.Node) (runtime.Obje
 func (p *Provisioner) Create(cluster *v3.Cluster) (runtime.Object, error) {
 	if cluster.Spec.EKSConfig != nil {
 		logrus.Debugf("EKS cluster [%s] will be managed by eks-operator-controller, skipping create", cluster.Name)
+		return cluster, nil
+	}
+
+	if cluster.Spec.GKEConfig != nil {
+		logrus.Debugf("GKE cluster [%s] will be managed by gke-operator-controller, skipping remove", cluster.Name)
 		return cluster, nil
 	}
 

@@ -126,6 +126,7 @@ type ClusterSpec struct {
 	AmazonElasticContainerServiceConfig *MapStringInterface         `json:"amazonElasticContainerServiceConfig,omitempty"`
 	GenericEngineConfig                 *MapStringInterface         `json:"genericEngineConfig,omitempty"`
 	EKSConfig                           *eksv1.EKSClusterConfigSpec `json:"eksConfig,omitempty"`
+	GKEConfig                           *gke.GKEClusterConfigSpec   `json:"gkeConfig, omitempty"`
 	ClusterTemplateName                 string                      `json:"clusterTemplateName,omitempty" norman:"type=reference[clusterTemplate],nocreate,noupdate"`
 	ClusterTemplateRevisionName         string                      `json:"clusterTemplateRevisionName,omitempty" norman:"type=reference[clusterTemplateRevision]"`
 	ClusterTemplateAnswers              Answer                      `json:"answers,omitempty"`
@@ -170,6 +171,7 @@ type ClusterStatus struct {
 	ScheduledClusterScanStatus           *ScheduledClusterScanStatus `json:"scheduledClusterScanStatus,omitempty"`
 	CurrentCisRunName                    string                      `json:"currentCisRunName,omitempty"`
 	EKSStatus                            EKSStatus                   `json:"eksStatus,omitempty" norman:"nocreate,noupdate"`
+	GKEStatus                            GKEStatus                   `json:"gkeStatus,omitempty" norman:"nocreate,noupdate"`
 }
 
 type ClusterComponentStatus struct {
@@ -356,4 +358,12 @@ type EKSStatus struct {
 	PrivateRequiresTunnel         *bool                       `json:"privateRequiresTunnel"`
 	ManagedLaunchTemplateID       string                      `json:"managedLaunchTemplateID"`
 	ManagedLaunchTemplateVersions map[string]string           `json:"managedLaunchTemplateVersions"`
+}
+
+type GKEStatus struct {
+	UpstreamSpec          *gke.GKEClusterConfigSpec `json:"upstreamSpec"`
+	VirtualNetwork        string                    `json:"virtualNetwork"`
+	Subnets               []string                  `json:"subnets"`
+	SecurityGroups        []string                  `json:"securityGroups"`
+	PrivateRequiresTunnel *bool                     `json:"privateRequiresTunnel"`
 }
